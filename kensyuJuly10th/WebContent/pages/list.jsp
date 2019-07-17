@@ -3,43 +3,39 @@
 <%@ taglib uri="http://struts.apache.org/tags-html" prefix="html" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %>
-
 <!DOCTYPE html>
 <html>
 	<head>
 	<meta charset="UTF-8">
-	<title>運勢の割合</title>
+	<title>過去半年間の入力誕生日の結果</title>
 	<link rel = "stylesheet" href = "./style/stylesheet.css"/>
 	</head>
 	<body>
-		<h2>各運勢の割合</h2>
-
-		<!-- 過去半年間の各運勢の割合の表 -->
-		<table class = "rate" border = "1">
+		<h2>過去半年間の入力誕生日の結果</h2>
+		<table class = "list" border = "1">
 		<tr>
-			<th colspan = "2">半年間の割合</th>
+			<th>占い日</th>
+			<th>運勢</th>
+			<th>願い事</th>
+			<th>商い</th>
+			<th>学問</th>
 		</tr>
-		<c:forEach var = "i" begin = "0" end = "${loopCounter}" step = "1">
-			<tr>
-			<th>${fortuneName[i]}</th>
-			<td>${rateHalfAYear[i]}％</td>
-			</tr>
-		</c:forEach>
-		</table>
 
-		<!-- 当日の各運勢の割合の表 -->
-		<table class = "rate" border = "1">
+		<!-- マップの行数だけ繰り返し表示させる -->
+		<c:forEach var = "i" begin = "0" end = "${loopCounter}" step = "1">
+
 		<tr>
-			<th colspan = "2">当日の割合</th>
-		</tr>
-		<c:forEach var = "i" begin = "0" end = "${loopCounter}" step = "1">
-			<tr>
-			<th>${fortuneName[i]}</th>
-			<td>${rateToday[i]}％</td>
-			</tr>
-		</c:forEach>
-		</table>
+			<td>${fortuneDay[i]}</td>
 
+			<!-- キーの日付からString[]のオブジェクトを取得し、各要素を取り出す -->
+			<c:forEach var = "omikuji" items = "${omikujiMap[fortuneDay[i]]}">
+			<td>${omikuji}</td>
+			</c:forEach>
+
+		</tr>
+		</c:forEach>
+
+		</table>
 		<html:form action = "/backOmikuji">
 			<html:hidden property="omikuji" value = "${omikuji}"/>
 			<input type = "submit" value = "結果画面へ戻る" class = "omikuji_button"/>

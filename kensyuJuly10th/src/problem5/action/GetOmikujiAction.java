@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.validator.ValidatorForm;
 
-import problem5.BirthdayValidatorForm;
+import problem5.GetOmikujiForm;
 import problem5.dao.OmikujiDao;
 import problem5.dao.ResultDao;
 /**
@@ -31,7 +31,7 @@ public class GetOmikujiAction extends Action {
 	 * @param response	レスポンス情報
 	 * @return	mapping.findForward("omikuji")	struts-config.xmlの<action>タグ内のname属性が"omikuji"の<forward>に飛ぶ
 	 */
-	public ActionForward execute(ActionMapping mapping, ValidatorForm form, HttpServletRequest request, HttpServletResponse response) {
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 
 		/**
 		 * HttpSession型の変数を作成
@@ -41,7 +41,7 @@ public class GetOmikujiAction extends Action {
 		/**
 		 * OmikujiFormで入力チェックを通った誕生日をformから取り出し、sql.Date型に変換
 		 */
-		BirthdayValidatorForm omikujiForm = (BirthdayValidatorForm) form;
+		GetOmikujiForm omikujiForm = (GetOmikujiForm) form;
 		String birthday = omikujiForm.getBirthday();
 		Date sqlBirthday = Date.valueOf(birthday);
 
@@ -89,10 +89,11 @@ public class GetOmikujiAction extends Action {
 		session.setAttribute("omikuji", omikuji);
 		session.setAttribute("today", today);
 		session.setAttribute("sqlBirthday", sqlBirthday);
+		session.setAttribute("birthday", birthday);
 
 		/**
 		 * omikuji.jspに遷移するようにフォワードのnameを指定
 		 */
-		return (mapping.findForward("omikuji"));
+		return mapping.findForward("omikuji");
 	}
 }

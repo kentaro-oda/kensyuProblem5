@@ -43,10 +43,6 @@ public class FortuneDao extends DBFields{
 	 */
 	public static List<String> getAllFortuneNameFindByFortuneId(){
 		try {
-			/**
-			 * DBと接続
-			 */
-			DBRelation.getConnection();
 
 			/**
 			 * 運勢名を格納するためのリストを作成
@@ -57,6 +53,11 @@ public class FortuneDao extends DBFields{
 			 * for分用のループカウンタの作成(運勢テーブルの行数を取得)
 			 */
 			int loopCounter = getFortuneCount();
+
+			/**
+			 * DBと接続
+			 */
+			DBRelation.getConnection();
 
 			/**
 			 * 運勢テーブルの各行の運勢名を取得しリストに格納するループ

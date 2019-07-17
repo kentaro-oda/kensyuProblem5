@@ -14,8 +14,10 @@
 <!-- ================================================ Form Bean Definitions -->
 
     <form-beans>
-    	<form-bean name = "ResultValidator" type = "problem5.BirthdayValidatorform"/>
-    	<form-bean name = "Omikuji" type = "problem5.OmikujiForm"/>
+    	<form-bean name = "GetOmikujiform" type = "problem5.GetOmikujiForm"/>
+    	<form-bean name = "GetFortuneRate" type = "problem5.GetFortuneRateForm"/>
+    	<form-bean name = "GetResultList" type = "problem5.GetResultListForm"/>
+    	<form-bean name = "BackOmikujiform" type = "problem5.BackOmikujiForm"/>
     </form-beans>
 
 
@@ -34,31 +36,35 @@
 <!-- =========================================== Global Forward Definitions -->
 
     <global-forwards>
-        <forward name = "top" path = "/inputBirthday.jsp"/>
+        <forward name = "top" path = "/pages/inputBirthday.jsp"/>
     </global-forwards>
 
 
 <!-- =========================================== Action Mapping Definitions -->
 
     <action-mappings>
-            <action path = "/ResultValidater" type = "problem5.action.GetOmikujiAction"
-            	name = "ResultValidator" scope = "request" validate = "true" input = "/inputBirthday.jsp">
-            	<forward name = "omikuji" path = "omikuji.jsp"/>
+            <action path = "/getOmikuji" type = "problem5.action.GetOmikujiAction"
+            	name = "GetOmikujiform" scope = "session" validate = "true" input = "/pages/inputBirthday.jsp">
+            	<forward name = "omikuji" path = "/pages/omikuji.jsp"/>
             </action>
-            <action path = "/FortuneRate" type = "problem5.action.FortuneRateAction"
-            	name = "Omikuji" scope = "session">
-            	<forward name = "rate" path = "rate.jsp"/>
+            <action path = "/getFortuneRate" type = "problem5.action.GetFortuneRateAction"
+            	name = "GetFortuneRate" scope = "session">
+            	<forward name = "rate" path = "/pages/rate.jsp"/>
             </action>
-            <action path = "/ResultList" type = "problem5.action.ResultListAction"
-            	name = "Omikuji" scope = "session">
-            	<forward name = "list" path = "list.jsp"/>
+            <action path = "/getResultList" type = "problem5.action.GetResultListAction"
+            	name = "GetResultList" scope = "session">
+            	<forward name = "list" path = "/pages/list.jsp"/>
+            </action>
+            <action path = "/backOmikuji" type = "problem5.action.BackOmikujiAction"
+            	name = "BackOmikujiform" scope = "session">
+            	<forward name = "omikuji" path = "/pages/omikuji.jsp"/>
             </action>
     </action-mappings>
 
 
 <!-- ======================================== Message Resources Definitions -->
 
-    <message-resources parameter="resources.validate.properties"/>
+    <message-resources parameter="validate"/>
 
 
 <!-- =============================================== Plug Ins Configuration -->

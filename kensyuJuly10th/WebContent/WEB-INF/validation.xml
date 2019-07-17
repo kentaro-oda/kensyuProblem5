@@ -40,12 +40,15 @@
     <formset>
 
 
-        <form name="ResultValidator">
-        	<field property = "birthday" depends = "required, mask date">
+        <form name="GetOmikujiform">
+        	<field property = "birthday" depends = "required, mask, date">
+        	<msg name = "required" key = "errors.required"/>
+        	<!--  <msg name = "mask" key = "errors.invalid"/>-->
         	<var>
         		<var-name>mask</var-name>
-        		<var-value>^\\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$</var-value>
+        		<var-value>^\d{4}-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$</var-value>
         	</var>
+        	<!--  <msg name = "date" key = "errors.date"/>-->
         	<var>
         		<var-name>datePattern</var-name>
         		<var-value>yyyy-MM-dd</var-value>

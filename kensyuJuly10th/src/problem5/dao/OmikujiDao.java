@@ -2,7 +2,7 @@ package problem5.dao;
 
 import java.sql.Date;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 
@@ -106,17 +106,23 @@ public class OmikujiDao extends DBFields{
 			/**
 			 * おみくじの結果を占い日と紐づけて格納するためのマップを作成
 			 */
-			Map<Date, String[]> omikujiMap = new HashMap<>();
+			Map<Date, String[]> omikujiMap = new LinkedHashMap<>();
+
+			/**
+			 * 半年前の日付を取得
+			 */
+			Date halfAYearAgo = ResultDao.getHalfAYearAgo(today);
 
 			/**
 			 * SQL文の実行
 			 */
-			String sql = "SELECT r.fortune_day f.fortune_name, o.negaigoto, o.akinai, o.gakumon FROM fortune f INNER JOIN omikuji o "
+			String sql = "SELECT r.fortune_day, f.fortune_name, o.negaigoto, o.akinai, o.gakumon FROM fortune f INNER JOIN omikuji o "
 					+ "ON f.fortune_id = o.fortune_id INNER JOIN result r ON o.omikuji_id = r.omikuji_id"
-					+ " WHERE birthday = ? HAVING DATEADD(month,-6,?) ORDER BY fortune_day DESC";
+					+ " WHERE birthday = ? AND fortune_day >= ? AND fortune_day <= ? ORDER BY fortune_day DESC";
 			ps = conn.prepareStatement(sql);
 			ps.setDate(1, birthday);
-			ps.setDate(2, today);
+			ps.setDate(2, halfAYearAgo);
+			ps.setDate(3, today);
 			rset = ps.executeQuery();
 
 			/**
@@ -154,4 +160,6 @@ public class OmikujiDao extends DBFields{
 			DBRelation.closeConnection();
 		}
 	}
+
+
 }

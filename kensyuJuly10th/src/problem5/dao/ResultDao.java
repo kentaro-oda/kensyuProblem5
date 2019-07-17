@@ -2,6 +2,7 @@ package problem5.dao;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 /**
  * 結果テーブル関連のDB処理を行うメソッドを集めたDAOクラス
  * @author k_oda
@@ -94,11 +95,23 @@ public class ResultDao extends DBFields{
 	}
 
 	/**
+	 * 半年前の日付を取得するメソッド
+	 * @param today
+	 * @return
+	 */
+	protected static Date getHalfAYearAgo(Date today) {
+		LocalDate ldToday = today.toLocalDate();
+		LocalDate halfAYearAgo = ldToday.minusMonths(6);
+
+		return Date.valueOf(halfAYearAgo);
+	}
+
+	/**
 	 * 過去半年分の全結果数を返すメソッド
 	 * @param today	今日の日付
 	 * @return	rset.getInt("count")	過去半年分のおみくじの結果数/0	エラー発生時
 	 */
-	public static int getResultCountForHalfAYear(Date today) {
+	public static double getResultCountForHalfAYear(Date today) {
 		try {
 			/**
 			 * DBと接続
@@ -106,14 +119,20 @@ public class ResultDao extends DBFields{
 			DBRelation.getConnection();
 
 			/**
+			 * 半年前の日付を取得
+			 */
+			Date halfAYearAgo = getHalfAYearAgo(today);
+
+			/**
 			 * SQL文の実行
 			 */
-			String sql = "SELECT COUNT(*) FROM result HAVING DATEADD(month,-6,?)";
+			String sql = "SELECT COUNT(*) FROM result WHERE fortune_day >= ? AND fortune_day <= ?";
 			ps = conn.prepareStatement(sql);
-			ps.setDate(1, today);
+			ps.setDate(1, halfAYearAgo);
+			ps.setDate(2, today);
 			rset = ps.executeQuery();
 			rset.next();
-			return rset.getInt("count");
+			return rset.getDouble("count");
 
 		}
 
@@ -136,7 +155,7 @@ public class ResultDao extends DBFields{
 	 * @param today		今日の日付
 	 * @return	rset.getInt("count")	過去半年分の該当運勢の結果数/ 0	エラー発生時
 	 */
-	public static int getResultCountFindByFortuneIdForHalfAYear(Integer fortuneId, Date today) {
+	public static double getResultCountFindByFortuneIdForHalfAYear(Integer fortuneId, Date today) {
 		try {
 			/**
 			 * DBと接続
@@ -144,16 +163,22 @@ public class ResultDao extends DBFields{
 			DBRelation.getConnection();
 
 			/**
+			 * 半年前の日付を取得
+			 */
+			Date halfAYearAgo = getHalfAYearAgo(today);
+
+			/**
 			 * SQL文の実行
 			 */
-			String sql = "SELECT r.COUNT(*) FROM result r INNER JOIN omikuji o ON r.omikuji_id = o.omikuji_id "
-					+ "INNER JOIN fortune f ON o.fortune_id = f.fortune_id WHERE f.fortune_id = ? HAVING DATEADD(month,-6,?)";
+			String sql = "SELECT COUNT(*) FROM result r INNER JOIN omikuji o ON r.omikuji_id = o.omikuji_id "
+					+ "INNER JOIN fortune f ON o.fortune_id = f.fortune_id WHERE f.fortune_id = ? AND fortune_day >= ? AND fortune_day <= ?";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, fortuneId);
-			ps.setDate(2, today);
+			ps.setDate(2, halfAYearAgo);
+			ps.setDate(3, today);
 			rset = ps.executeQuery();
 			rset.next();
-			return rset.getInt("count");
+			return rset.getDouble("count");
 
 		}
 
@@ -174,7 +199,7 @@ public class ResultDao extends DBFields{
 	 * @param today	今日の日付
 	 * @return	rset.getInt("count")	今日一日のおみくじの結果数/0	エラー発生時
 	 */
-	public static int getResultCountForToday(Date today) {
+	public static double getResultCountForToday(Date today) {
 		try {
 			/**
 			 * DBと接続
@@ -189,7 +214,7 @@ public class ResultDao extends DBFields{
 			ps.setDate(1, today);
 			rset = ps.executeQuery();
 			rset.next();
-			return rset.getInt("count");
+			return rset.getDouble("count");
 
 		}
 
@@ -212,7 +237,7 @@ public class ResultDao extends DBFields{
 	 * @param today		今日の日付
 	 * @return	rset.getInt("count")	今日一日の該当運勢の結果数/ 0	エラー発生時
 	 */
-	public static int getResultCountFindByFortuneIdForToday(Integer fortuneId, Date today) {
+	public static double getResultCountFindByFortuneIdForToday(Integer fortuneId, Date today) {
 		try {
 			/**
 			 * DBと接続
@@ -222,14 +247,14 @@ public class ResultDao extends DBFields{
 			/**
 			 * SQL文の実行
 			 */
-			String sql = "SELECT r.COUNT(*) FROM result r INNER JOIN omikuji o ON r.omikuji_id = o.omikuji_id "
+			String sql = "SELECT COUNT(*) FROM result r INNER JOIN omikuji o ON r.omikuji_id = o.omikuji_id "
 					+ "INNER JOIN fortune f ON o.fortune_id = f.fortune_id WHERE f.fortune_id = ? AND r.fortune_day = ?";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, fortuneId);
 			ps.setDate(2, today);
 			rset = ps.executeQuery();
 			rset.next();
-			return rset.getInt("count");
+			return rset.getDouble("count");
 
 		}
 
@@ -244,5 +269,4 @@ public class ResultDao extends DBFields{
 			DBRelation.closeConnection();
 		}
 	}
-
 }

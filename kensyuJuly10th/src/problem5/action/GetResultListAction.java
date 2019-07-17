@@ -10,10 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.validator.ValidatorForm;
 
+import problem5.GetResultListForm;
 import problem5.dao.OmikujiDao;
 
 /**
@@ -32,7 +33,7 @@ public class GetResultListAction extends Action {
 	 * @param response	レスポンス情報
 	 * @return	mapping.findForward("list")	struts-config.xmlの<action>タグ内のname属性が"list"の<forward>に飛ぶ
 	 */
-	public ActionForward execute(ActionMapping mapping, ValidatorForm form, HttpServletRequest request, HttpServletResponse response) {
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 
 		/**
 		 * HttpSession型の変数を作成
@@ -40,10 +41,11 @@ public class GetResultListAction extends Action {
 		HttpSession session = request.getSession();
 
 		/**
-		 * 今日の日付と入力した誕生日をsessionから取り出し、sql.Date型に変換
+		 * 今日の日付と入力した誕生日をformから取り出し、sql.Date型に変換
 		 */
-		Date today = (Date) session.getAttribute("today");
-		Date birthday = (Date) session.getAttribute("birthday");
+		GetResultListForm resultListForm = (GetResultListForm) form;
+		Date today = resultListForm.getToday();
+		Date birthday = resultListForm.getSqlBirthday();
 
 
 		/**
