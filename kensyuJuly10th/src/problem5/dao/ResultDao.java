@@ -3,6 +3,8 @@ package problem5.dao;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
+import java.util.Map;
 /**
  * 結果テーブル関連のDB処理を行うメソッドを集めたDAOクラス
  * @author k_oda
@@ -155,44 +157,84 @@ public class ResultDao extends DBFields{
 	 * @param today		今日の日付
 	 * @return	rset.getInt("count")	過去半年分の該当運勢の結果数/ 0	エラー発生時
 	 */
-	public static double getResultCountFindByFortuneIdForHalfAYear(Integer fortuneId, Date today) {
-		try {
-			/**
-			 * DBと接続
-			 */
-			DBRelation.getConnection();
-
-			/**
-			 * 半年前の日付を取得
-			 */
-			Date halfAYearAgo = getHalfAYearAgo(today);
-
-			/**
-			 * SQL文の実行
-			 */
-			String sql = "SELECT COUNT(*) FROM result r INNER JOIN omikuji o ON r.omikuji_id = o.omikuji_id "
-					+ "INNER JOIN fortune f ON o.fortune_id = f.fortune_id WHERE f.fortune_id = ? AND fortune_day >= ? AND fortune_day <= ?";
-			ps = conn.prepareStatement(sql);
-			ps.setInt(1, fortuneId);
-			ps.setDate(2, halfAYearAgo);
-			ps.setDate(3, today);
-			rset = ps.executeQuery();
-			rset.next();
-			return rset.getDouble("count");
-
-		}
-
-		catch(SQLException e) {
-			return 0;
-		}
+	public static Map<String, Double> getResultCountFindByFortuneIdForHalfAYear(Date today) {
 
 		/**
-		 * DBとの接続を切断
+		 * 運勢名とその行数を格納するMapを作成
 		 */
-		finally {
-			DBRelation.closeConnection();
+		Map<String, Double> halfAYearMap = new LinkedHashMap<>();
+
+
+		/**
+		 * 半年前の日付を取得
+		 */
+		Date halfAYearAgo = getHalfAYearAgo(today);
+
+		/**
+		 * for分用のループカウンタの作成(運勢テーブルの行数を取得)
+		 */
+		int loopCounter = FortuneDao.getFortuneCount();
+
+		/**
+		 * 各運勢ごとに半年分の件数をだしマップに格納するfor文
+		 */
+		for(int i = 1; i <= loopCounter; i++) {
+
+			try {
+
+				/**
+				 * DBと接続
+				 */
+				DBRelation.getConnection();
+
+				/**
+				 * SQL文の実行
+				 */
+				String sql = "SELECT f.fortune_name, COUNT(*) FROM result r INNER JOIN omikuji o ON r.omikuji_id = o.omikuji_id "
+						+ "INNER JOIN fortune f ON o.fortune_id = f.fortune_id WHERE f.fortune_id = ? AND fortune_day >= ? AND fortune_day <= ? "
+						+ "GROUP BY fortune_name";
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, i);
+				ps.setDate(2, halfAYearAgo);
+				ps.setDate(3, today);
+				rset = ps.executeQuery();
+				rset.next();
+
+
+
+				/**
+				 * SQL文で取得した名前を変数に代入
+				 */
+				String fortuneName = rset.getString("fortune_name");
+
+				/**
+				 * マップに値を格納し返却
+				 */
+				halfAYearMap.put(fortuneName, rset.getDouble("count"));
+			}
+
+			/**
+			 * 名前を代入するときに値がなかった場合(一度もその運勢が惹かれていない場合)
+			 * 改めて名前を取得し、それを0.0とともにマップに格納し返却
+			 */
+			catch(SQLException e) {
+				String fortuneName = FortuneDao.getFortuneNameFindByFortuneId(i);
+
+				halfAYearMap.put(fortuneName, 0.0);
+			}
+
+			/**
+			 * DBとの接続を切断
+			 */
+			finally {
+				DBRelation.closeConnection();
+			}
+
 		}
-	}
+
+		return halfAYearMap;
+
+		}
 
 	/**
 	 * 今日一日の全結果数を返すメソッド
@@ -237,36 +279,75 @@ public class ResultDao extends DBFields{
 	 * @param today		今日の日付
 	 * @return	rset.getInt("count")	今日一日の該当運勢の結果数/ 0	エラー発生時
 	 */
-	public static double getResultCountFindByFortuneIdForToday(Integer fortuneId, Date today) {
-		try {
-			/**
-			 * DBと接続
-			 */
-			DBRelation.getConnection();
 
-			/**
-			 * SQL文の実行
-			 */
-			String sql = "SELECT COUNT(*) FROM result r INNER JOIN omikuji o ON r.omikuji_id = o.omikuji_id "
-					+ "INNER JOIN fortune f ON o.fortune_id = f.fortune_id WHERE f.fortune_id = ? AND r.fortune_day = ?";
-			ps = conn.prepareStatement(sql);
-			ps.setInt(1, fortuneId);
-			ps.setDate(2, today);
-			rset = ps.executeQuery();
-			rset.next();
-			return rset.getDouble("count");
-
-		}
-
-		catch(SQLException e) {
-			return 0;
-		}
+	public static Map<String, Double> getResultCountFindByFortuneIdForToday(Date today) {
 
 		/**
-		 * DBとの接続を切断
+		 * 運勢名とその行数を格納するMapを作成
 		 */
-		finally {
-			DBRelation.closeConnection();
+		Map<String, Double> todayMap = new LinkedHashMap<>();
+
+		/**
+		 * for分用のループカウンタの作成(運勢テーブルの行数を取得)
+		 */
+		int loopCounter = FortuneDao.getFortuneCount();
+
+		/**
+		 * 各運勢ごとに今日一日の件数をだしマップに格納するfor文
+		 */
+		for(int i = 1; i <= loopCounter; i++) {
+
+			try {
+				/**
+				 * DBと接続
+				 */
+				DBRelation.getConnection();
+
+				/**
+				 * SQL文の実行
+				 */
+				String sql = "SELECT f.fortune_name, COUNT(*) FROM result r INNER JOIN omikuji o ON r.omikuji_id = o.omikuji_id "
+						+ "INNER JOIN fortune f ON o.fortune_id = f.fortune_id WHERE f.fortune_id = ? AND r.fortune_day = ? "
+						+ "GROUP BY fortune_name";
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, i);
+				ps.setDate(2, today);
+				rset = ps.executeQuery();
+				rset.next();
+
+
+
+				/**
+				 * SQL文で取得した名前を変数に代入
+				 */
+				String fortuneName = rset.getString("fortune_name");
+
+				/**
+				 * マップに値を格納
+				 */
+				todayMap.put(fortuneName, rset.getDouble("count"));
+
+			}
+
+			/**
+			 * 名前を代入するときに値がなかった場合(一度もその運勢が惹かれていない場合)
+			 * 改めて名前を取得し、それを0.0とともにマップに格納し返却
+			 */
+			catch(SQLException e) {
+
+				String fortuneName = FortuneDao.getFortuneNameFindByFortuneId(i);
+
+				todayMap.put(fortuneName, 0.0);
+			}
+
+			/**
+			 * DBとの接続を切断
+			 */
+			finally {
+				DBRelation.closeConnection();
+			}
 		}
+
+		return todayMap;
 	}
 }

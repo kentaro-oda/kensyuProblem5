@@ -22,13 +22,13 @@
 		</tr>
 
 		<!-- マップの行数だけ繰り返し表示させる -->
-		<c:forEach var = "i" begin = "0" end = "${loopCounter}" step = "1">
+		<c:forEach var = "fortuneday" items = "${fortuneDay}">
 
 		<tr>
-			<td>${fortuneDay[i]}</td>
+			<td>${fortuneday}</td>
 
 			<!-- キーの日付からString[]のオブジェクトを取得し、各要素を取り出す -->
-			<c:forEach var = "omikuji" items = "${omikujiMap[fortuneDay[i]]}">
+			<c:forEach var = "omikuji" items = "${omikujiMap[fortuneday]}">
 			<td>${omikuji}</td>
 			</c:forEach>
 

@@ -2,7 +2,9 @@ package problem5.action;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +15,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import problem5.dao.FortuneDao;
 import problem5.dao.ResultDao;
 import problem5.form.GetFortuneRateForm;
 
@@ -53,49 +54,44 @@ public class GetFortuneRateAction extends Action{
 		double resultToday = ResultDao.getResultCountForToday(today);
 
 		/**
-		 * 半年分、当日分の各運勢の割合を格納するリストを作成
+		 * 半年分、当日分の各運勢の割合を格納するマップと運勢名を格納するリストを作成
 		 */
-		List<Integer> rateHalfAYear = new ArrayList<>();
-		List<Integer> rateToday = new ArrayList<>();
+		Map<String, Integer> rateHalfAYear = new LinkedHashMap<>();
+		Map<String, Integer> rateToday = new LinkedHashMap<>();
+		List<String> fortuneNameList = new ArrayList<>();
+
 
 		/**
-		 * for分用のループカウンタの作成(運勢テーブルの行数を取得)
+		 * 過去半年分の各運勢の件数を取得
+		 * 過去半年分の各運勢の件数を過去半年分の全結果で割り、100倍した後にint型に変換(%で表示させるため)
+		 * 求めた割合をリストに格納
 		 */
-		int loopCounter = FortuneDao.getFortuneCount();
-
+		Map<String, Double> resultIdHalfAYear = ResultDao.getResultCountFindByFortuneIdForHalfAYear(today);
+		for(String fortuneName: resultIdHalfAYear.keySet()) {
+			fortuneNameList.add(fortuneName);
+			double countFortuneNameHalfAYear = resultIdHalfAYear.get(fortuneName);
+			int rateIdHalfAYear = (int)((countFortuneNameHalfAYear / resultHalfAYear) * 100);
+			rateHalfAYear.put(fortuneName, rateIdHalfAYear);
+		}
 		/**
-		 * 各運勢ごとに半年分、当日分の件数をだし割合を求めリストに格納するfor文
+		 * 当日分の各運勢の件数を取得
+		 * 当日分の各運勢の件数を当日分の全結果で割り、100倍した後にint型に変換(%で表示させるため)
+		 * 求めた割合をリストに格納
 		 */
-		for(int i = 1; i <= loopCounter; i++) {
-
-			/**
-			 * 過去半年分の各運勢の件数を取得
-			 * 過去半年分の各運勢の件数を過去半年分の全結果で割り、100倍した後にint型に変換(%で表示させるため)
-			 * 求めた割合をリストに格納
-			 */
-			double resultIdHalfAYear = ResultDao.getResultCountFindByFortuneIdForHalfAYear(i, today);
-			int rateIdHalfAYear = (int)((resultIdHalfAYear / resultHalfAYear) * 100);
-			rateHalfAYear.add(rateIdHalfAYear);
-
-			/**
-			 * 当日分の各運勢の件数を取得
-			 * 当日分の各運勢の件数を当日分の全結果で割り、100倍した後にint型に変換(%で表示させるため)
-			 * 求めた割合をリストに格納
-			 */
-			double resultIdToday = ResultDao.getResultCountFindByFortuneIdForToday(i, today);
-			int rateIdToday = (int)((resultIdToday / resultToday) * 100);
-			rateToday.add(rateIdToday);
+		Map<String, Double> resultIdToday = ResultDao.getResultCountFindByFortuneIdForToday(today);
+		for(String fortuneName: resultIdToday.keySet()) {
+			double countFortuneNameToday = resultIdToday.get(fortuneName);
+			int rateIdToday = (int)((countFortuneNameToday / resultToday) * 100);
+			rateToday.put(fortuneName, rateIdToday);
 		}
 
 
-		List<String> fortuneNameList = FortuneDao.getAllFortuneNameFindByFortuneId();
 		/**
 		 * 各割合のリストと運勢名のリスト、JSP用ループカウンタをそれぞれセッションに登録
 		 */
-		session.setAttribute("rateHalfAYear", rateHalfAYear);
-		session.setAttribute("rateToday", rateToday);
+		session.setAttribute("rateHalfAYearMap", rateHalfAYear);
+		session.setAttribute("rateTodayMap", rateToday);
 		session.setAttribute("fortuneName", fortuneNameList);
-		session.setAttribute("loopCounter", loopCounter - 1);
 
 		/**
 		 * rate.jspに遷移するようにフォワードのnameを指定

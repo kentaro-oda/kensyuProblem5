@@ -20,10 +20,10 @@
 		<tr>
 			<th class = "table_size" colspan = "2">半年間の割合</th>
 		</tr>
-		<c:forEach var = "i" begin = "0" end = "${loopCounter}" step = "1">
+		<c:forEach var = "fortune" items = "${fortuneName}">
 			<tr>
-			<th>${fortuneName[i]}</th>
-			<td>${rateHalfAYear[i]}％</td>
+			<th>${fortune}</th>
+			<td>${rateHalfAYearMap[fortune]}％</td>
 			</tr>
 		</c:forEach>
 		</table><br>
@@ -33,10 +33,10 @@
 		<tr>
 			<th class = "table_size" colspan = "2">当日の割合</th>
 		</tr>
-		<c:forEach var = "i" begin = "0" end = "${loopCounter}" step = "1">
+		<c:forEach var = "fortune" items = "${fortuneName}">
 			<tr>
-			<th>${fortuneName[i]}</th>
-			<td>${rateToday[i]}％</td>
+			<th>${fortune}</th>
+			<td>${rateTodayMap[fortune]}％</td>
 			</tr>
 		</c:forEach>
 		</table>
