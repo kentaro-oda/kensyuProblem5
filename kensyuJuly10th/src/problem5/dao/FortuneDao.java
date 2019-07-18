@@ -37,9 +37,11 @@ public class FortuneDao extends DBFields{
 
 	/**
 	 * 運勢テーブルの運勢名を取得するメソッド
+	 * @param fortuneId		運勢コード
+	 *
 	 * @return	fortuneNameList	全運勢名が登録されたリスト
 	 */
-	public static String getFortuneNameFindByFortuneId(int i){
+	public static String getFortuneNameFindByFortuneId(int fortuneId){
 		try {
 
 			/**
@@ -52,7 +54,7 @@ public class FortuneDao extends DBFields{
 			 */
 			String sql = "SELECT fortune_name FROM fortune WHERE fortune_id = ?";
 			ps = conn.prepareStatement(sql);
-			ps.setInt(1, i);
+			ps.setInt(1, fortuneId);
 			rset = ps.executeQuery();
 			rset.next();
 			return rset.getString("fortune_name");

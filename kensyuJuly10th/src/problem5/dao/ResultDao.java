@@ -98,8 +98,8 @@ public class ResultDao extends DBFields{
 
 	/**
 	 * 半年前の日付を取得するメソッド
-	 * @param today
-	 * @return
+	 * @param today	今日の日付
+	 * @return Date.valueOf(halfAYearAgo)	sql.Date型に変換された半年前の日付
 	 */
 	protected static Date getHalfAYearAgo(Date today) {
 		LocalDate ldToday = today.toLocalDate();
@@ -153,7 +153,6 @@ public class ResultDao extends DBFields{
 	/**
 	 * 過去半年分の各運勢(大吉など)の結果数を返すメソッド
 	 *
-	 * @param fortuneId	運勢コード
 	 * @param today		今日の日付
 	 * @return	rset.getInt("count")	過去半年分の該当運勢の結果数/ 0	エラー発生時
 	 */
@@ -275,7 +274,6 @@ public class ResultDao extends DBFields{
 	/**
 	 * 今日一日の各運勢(大吉など)の結果数を返すメソッド
 	 *
-	 * @param fortuneId	運勢コード
 	 * @param today		今日の日付
 	 * @return	rset.getInt("count")	今日一日の該当運勢の結果数/ 0	エラー発生時
 	 */

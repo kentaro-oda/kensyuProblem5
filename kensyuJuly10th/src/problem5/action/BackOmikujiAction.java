@@ -16,7 +16,7 @@ public class BackOmikujiAction extends Action {
 	/**
 	 * rate.jspとlist.jspからomikuji.jspに戻るメソッド
 	 *
-	 * @param mapping	struts-config.xmlの<action>タグ内の<forward>を指定するためのnameを指定した変数
+	 * @param mapping	struts-config.xmlのactionタグ内のforwardを指定するためのnameを指定した変数
 	 * @param form		アクション・フォームBeanの値を格納した変数
 	 * @param request	リクエスト情報
 	 * @param response	レスポンス情報

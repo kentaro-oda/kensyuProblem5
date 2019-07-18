@@ -27,7 +27,7 @@ public class GetResultListAction extends Action {
 	/**
 	 * 過去半年間の入力誕生日と同日の結果を全て取得するメソッド
 	 *
-	 * @param mapping	struts-config.xmlの<action>タグ内の<forward>を指定するためのnameを指定した変数
+	 * @param mapping	struts-config.xmlのactionタグ内のforwardを指定するためのnameを指定した変数
 	 * @param form		アクション・フォームBeanの値を格納した変数
 	 * @param request	リクエスト情報
 	 * @param response	レスポンス情報
