@@ -35,11 +35,11 @@
 		</tr>
 		</c:forEach>
 
-		</table>
+		</table><br>
 		<html:form action = "/backOmikuji">
 			<html:hidden property="omikuji" value = "${omikuji}"/>
 			<input type = "submit" value = "結果画面へ戻る" class = "omikuji_button"/>
-		</html:form>
+		</html:form><br>
 
 		<html:link forward = "top">トップへ戻る</html:link>
 	</body>

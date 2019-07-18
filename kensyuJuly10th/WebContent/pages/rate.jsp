@@ -15,9 +15,10 @@
 		<h2>各運勢の割合</h2>
 
 		<!-- 過去半年間の各運勢の割合の表 -->
+		<div class = "side_by_side">
 		<table class = "rate" border = "1">
 		<tr>
-			<th colspan = "2">半年間の割合</th>
+			<th class = "table_size" colspan = "2">半年間の割合</th>
 		</tr>
 		<c:forEach var = "i" begin = "0" end = "${loopCounter}" step = "1">
 			<tr>
@@ -25,12 +26,12 @@
 			<td>${rateHalfAYear[i]}％</td>
 			</tr>
 		</c:forEach>
-		</table>
+		</table><br>
 
 		<!-- 当日の各運勢の割合の表 -->
-		<table class = "rate" border = "1">
+		<table class = "rate left_margin" border = "1">
 		<tr>
-			<th colspan = "2">当日の割合</th>
+			<th class = "table_size" colspan = "2">当日の割合</th>
 		</tr>
 		<c:forEach var = "i" begin = "0" end = "${loopCounter}" step = "1">
 			<tr>
@@ -39,11 +40,13 @@
 			</tr>
 		</c:forEach>
 		</table>
+		</div><br>
 
+		<div class = "top_margin">
 		<html:form action = "/backOmikuji">
 			<html:hidden property="omikuji" value = "${omikuji}"/>
 			<input type = "submit" value = "結果画面へ戻る" class = "omikuji_button"/>
-		</html:form>
+		</html:form></div><br>
 
 		<html:link forward = "top">トップへ戻る</html:link>
 	</body>

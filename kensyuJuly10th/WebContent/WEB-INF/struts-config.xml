@@ -14,10 +14,10 @@
 <!-- ================================================ Form Bean Definitions -->
 
     <form-beans>
-    	<form-bean name = "GetOmikujiform" type = "problem5.GetOmikujiForm"/>
-    	<form-bean name = "GetFortuneRate" type = "problem5.GetFortuneRateForm"/>
-    	<form-bean name = "GetResultList" type = "problem5.GetResultListForm"/>
-    	<form-bean name = "BackOmikujiform" type = "problem5.BackOmikujiForm"/>
+    	<form-bean name = "GetOmikujiform" type = "problem5.form.GetOmikujiForm"/>
+    	<form-bean name = "GetFortuneRate" type = "problem5.form.GetFortuneRateForm"/>
+    	<form-bean name = "GetResultList" type = "problem5.form.GetResultListForm"/>
+    	<form-bean name = "BackOmikujiform" type = "problem5.form.BackOmikujiForm"/>
     </form-beans>
 
 

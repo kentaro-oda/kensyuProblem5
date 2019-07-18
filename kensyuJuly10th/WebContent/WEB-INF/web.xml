@@ -33,12 +33,22 @@
     </init-param>
     <load-on-startup>2</load-on-startup>
  </servlet>
+  <servlet>
+  	<servlet-name>Top</servlet-name>
+  	<display-name>Top</display-name>
+  	<description></description>
+  	<servlet-class>problem5.Top</servlet-class>
+  </servlet>
 
 
   <!-- Standard Action Servlet Mapping -->
   <servlet-mapping>
     <servlet-name>action</servlet-name>
     <url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>Top</servlet-name>
+  	<url-pattern>/Top</url-pattern>
   </servlet-mapping>
 
 

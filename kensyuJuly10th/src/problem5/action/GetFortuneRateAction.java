@@ -13,9 +13,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import problem5.GetFortuneRateForm;
 import problem5.dao.FortuneDao;
 import problem5.dao.ResultDao;
+import problem5.form.GetFortuneRateForm;
 
 /**
  * 過去半年と本日の占い結果の割合を取得するアクションクラス

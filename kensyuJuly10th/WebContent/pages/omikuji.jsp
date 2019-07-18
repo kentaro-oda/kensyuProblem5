@@ -20,26 +20,31 @@
 			<td>${omikuji[1]}</td>
 			</tr>
 			<tr>
-			<th>商い：</th>
+			<th>商　い：</th>
 			<td>${omikuji[2]}</td>
 			</tr>
 			<tr>
-			<th>学問：</th>
+			<th>学　問：</th>
 			<td>${omikuji[3]}</td>
 			</tr>
-		</table>
+		</table><br>
 
+		<div class = "side_by_side">
 		<html:form action = "/getFortuneRate">
 			<html:hidden property="today" value = "${today}"/>
-			<input type = "submit" value = "過去半年と今日の運勢の割合"/>
-		</html:form><br>
+			<input type = "submit" value = "過去半年と今日の運勢の割合" class = "rate_button"/>
+		</html:form>
+
 
 		<html:form action = "/getResultList">
 			<html:hidden property="today" value = "${today}"/>
 			<html:hidden property="sqlBirthday" value = "${sqlBirthday}"/>
-			<input type = "submit" value = "過去半年間のあなたの運勢"/>
-		</html:form><br />
+			<input type = "submit" value = "過去半年間のあなたの運勢" class = "list_button left_margin"/>
+		</html:form>
+		</div>
 
+		<div class = "top_margin">
 		<html:link forward = "top">トップへ戻る</html:link>
+		</div>
 	</body>
 </html>

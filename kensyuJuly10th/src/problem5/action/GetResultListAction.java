@@ -14,8 +14,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import problem5.GetResultListForm;
 import problem5.dao.OmikujiDao;
+import problem5.form.GetResultListForm;
 
 /**
  * 過去半年間の入力誕生日と同日の結果を全て取得するアクションクラス

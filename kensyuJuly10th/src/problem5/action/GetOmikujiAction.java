@@ -13,9 +13,9 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import problem5.GetOmikujiForm;
 import problem5.dao.OmikujiDao;
 import problem5.dao.ResultDao;
+import problem5.form.GetOmikujiForm;
 /**
  * おみくじの結果を取得するアクションクラス
  * @author k_oda
