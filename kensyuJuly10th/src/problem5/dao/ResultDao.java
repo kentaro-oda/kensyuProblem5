@@ -156,6 +156,7 @@ public class ResultDao extends DBFields{
 	 * @param today		今日の日付
 	 * @return	rset.getInt("count")	過去半年分の該当運勢の結果数/ 0	エラー発生時
 	 */
+	@SuppressWarnings("unused")
 	public static Map<String, Double> getResultCountFindByFortuneIdForHalfAYear(Date today) {
 
 		/**
@@ -189,27 +190,34 @@ public class ResultDao extends DBFields{
 				/**
 				 * SQL文の実行
 				 */
-				String sql = "SELECT f.fortune_name, COUNT(*) FROM result r INNER JOIN omikuji o ON r.omikuji_id = o.omikuji_id "
-						+ "INNER JOIN fortune f ON o.fortune_id = f.fortune_id WHERE f.fortune_id = ? AND fortune_day >= ? AND fortune_day <= ? "
-						+ "GROUP BY fortune_name";
+				String sql = "SELECT f.fortune_name, rescnt.count FROM fortune f LEFT OUTER JOIN "
+						+ "(SELECT o.fortune_id,COUNT(*) FROM omikuji o INNER JOIN result r ON o.omikuji_id = r.omikuji_id "
+						+ "WHERE r.fortune_day >= ? AND r.fortune_day <= ? GROUP BY o.fortune_id) rescnt ON f.fortune_id = rescnt.fortune_id "
+						+ "WHERE f.fortune_id = ?";
 				ps = conn.prepareStatement(sql);
-				ps.setInt(1, i);
-				ps.setDate(2, halfAYearAgo);
-				ps.setDate(3, today);
+				ps.setDate(1, halfAYearAgo);
+				ps.setDate(2, today);
+				ps.setInt(3, i);
 				rset = ps.executeQuery();
 				rset.next();
+
+
 
 
 
 				/**
 				 * SQL文で取得した名前を変数に代入
 				 */
-				String fortuneName = rset.getString("fortune_name");
+				Double fortuneCount= rset.getDouble("count");
+
+				if(fortuneCount == null) {
+					fortuneCount = 0.0;
+				}
 
 				/**
 				 * マップに値を格納し返却
 				 */
-				halfAYearMap.put(fortuneName, rset.getDouble("count"));
+				halfAYearMap.put(rset.getString("fortune_name"),fortuneCount );
 			}
 
 			/**
@@ -217,9 +225,7 @@ public class ResultDao extends DBFields{
 			 * 改めて名前を取得し、それを0.0とともにマップに格納し返却
 			 */
 			catch(SQLException e) {
-				String fortuneName = FortuneDao.getFortuneNameFindByFortuneId(i);
-
-				halfAYearMap.put(fortuneName, 0.0);
+				e.printStackTrace();
 			}
 
 			/**
@@ -278,6 +284,7 @@ public class ResultDao extends DBFields{
 	 * @return	rset.getInt("count")	今日一日の該当運勢の結果数/ 0	エラー発生時
 	 */
 
+	@SuppressWarnings("unused")
 	public static Map<String, Double> getResultCountFindByFortuneIdForToday(Date today) {
 
 		/**
@@ -304,12 +311,13 @@ public class ResultDao extends DBFields{
 				/**
 				 * SQL文の実行
 				 */
-				String sql = "SELECT f.fortune_name, COUNT(*) FROM result r INNER JOIN omikuji o ON r.omikuji_id = o.omikuji_id "
-						+ "INNER JOIN fortune f ON o.fortune_id = f.fortune_id WHERE f.fortune_id = ? AND r.fortune_day = ? "
-						+ "GROUP BY fortune_name";
+				String sql = "SELECT f.fortune_name, rescnt.count FROM fortune f LEFT OUTER JOIN "
+						+ "(SELECT o.fortune_id,COUNT(*) FROM omikuji o INNER JOIN result r ON o.omikuji_id = r.omikuji_id "
+						+ "WHERE r.fortune_day = ? GROUP BY o.fortune_id) rescnt ON f.fortune_id = rescnt.fortune_id "
+						+ "WHERE f.fortune_id = ?";
 				ps = conn.prepareStatement(sql);
-				ps.setInt(1, i);
-				ps.setDate(2, today);
+				ps.setDate(1, today);
+				ps.setInt(2, i);
 				rset = ps.executeQuery();
 				rset.next();
 
@@ -318,24 +326,25 @@ public class ResultDao extends DBFields{
 				/**
 				 * SQL文で取得した名前を変数に代入
 				 */
-				String fortuneName = rset.getString("fortune_name");
+				Double fortuneCount= rset.getDouble("count");
+
+				if(fortuneCount == null) {
+					fortuneCount = 0.0;
+				}
+
 
 				/**
 				 * マップに値を格納
 				 */
-				todayMap.put(fortuneName, rset.getDouble("count"));
+				todayMap.put(rset.getString("fortune_name"), fortuneCount);
 
 			}
 
 			/**
-			 * 名前を代入するときに値がなかった場合(一度もその運勢が惹かれていない場合)
-			 * 改めて名前を取得し、それを0.0とともにマップに格納し返却
+			 *
 			 */
 			catch(SQLException e) {
-
-				String fortuneName = FortuneDao.getFortuneNameFindByFortuneId(i);
-
-				todayMap.put(fortuneName, 0.0);
+				e.printStackTrace();
 			}
 
 			/**
